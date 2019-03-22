@@ -1,0 +1,9 @@
+﻿Compilando Tiempo_Urgencia...
+1>------ Publicación iniciada: proyecto: Tiempo_Urgencia, configuración: Debug Any CPU ------
+1>  Tiempo_Urgencia -> C:\Users\ividal\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.exe
+Conectando con 'C:\Users\ividal\Desktop\Proyecto Deluxe\'...
+Publicando archivos...
+Publicación correcta.
+C:\Users\ividal\Desktop\Proyecto Deluxe\
+========== Compilar: 0 correctos, 0 incorrectos, 1 actualizados, 0 omitidos ==========
+========== Publicación: 1 procesados, 0 no procesados, 0 omitidos ==========

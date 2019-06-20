@@ -46,6 +46,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pediatria = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.adultos = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.espera = new System.Windows.Forms.Label();
             this.categoria = new System.Windows.Forms.Label();
             this.box = new System.Windows.Forms.Label();
@@ -61,10 +65,6 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.temporizador = new System.Windows.Forms.Timer(this.components);
-            this.adultos = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.pediatria = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -99,7 +99,49 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1275, 803);
             this.panel1.TabIndex = 0;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+           
+            // 
+            // pediatria
+            // 
+            this.pediatria.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
+            this.pediatria.Location = new System.Drawing.Point(726, 497);
+            this.pediatria.Name = "pediatria";
+            this.pediatria.Size = new System.Drawing.Size(93, 25);
+            this.pediatria.TabIndex = 17;
+            this.pediatria.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
+            this.label7.Location = new System.Drawing.Point(620, 497);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(114, 25);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Pediatría: ";
+            // 
+            // adultos
+            // 
+            this.adultos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
+            this.adultos.Location = new System.Drawing.Point(464, 497);
+            this.adultos.Name = "adultos";
+            this.adultos.Size = new System.Drawing.Size(93, 25);
+            this.adultos.TabIndex = 15;
+            this.adultos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
+            this.label6.Location = new System.Drawing.Point(371, 497);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(100, 25);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Adultos: ";
             // 
             // espera
             // 
@@ -127,7 +169,7 @@
             this.box.Size = new System.Drawing.Size(93, 25);
             this.box.TabIndex = 11;
             this.box.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.box.Click += new System.EventHandler(this.label5_Click_1);
+            
             // 
             // pictureBox3
             // 
@@ -160,7 +202,7 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 9;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click_1);
+           
             // 
             // dataCateg
             // 
@@ -228,7 +270,7 @@
             this.dataCateg.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataCateg.Size = new System.Drawing.Size(1243, 251);
             this.dataCateg.TabIndex = 7;
-            this.dataCateg.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataCateg_CellContentClick);
+           
             this.dataCateg.ColumnSortModeChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataCateg_ColumnSortModeChanged);
             this.dataCateg.SelectionChanged += new System.EventHandler(this.dataCateg_SelectionChanged);
             // 
@@ -298,7 +340,7 @@
             this.dataBox.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataBox.Size = new System.Drawing.Size(1243, 251);
             this.dataBox.TabIndex = 1;
-            this.dataBox.AllowUserToResizeRowsChanged += new System.EventHandler(this.dataBox_AllowUserToResizeRowsChanged);
+            
             this.dataBox.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataBox_CellContentClick);
             this.dataBox.ColumnSortModeChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataBox_ColumnSortModeChanged);
             this.dataBox.SelectionChanged += new System.EventHandler(this.dataBox_SelectionChanged);
@@ -378,7 +420,7 @@
             this.label3.Size = new System.Drawing.Size(197, 25);
             this.label3.TabIndex = 4;
             this.label3.Text = "Pacientes en Box: ";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+      
             // 
             // label2
             // 
@@ -391,7 +433,7 @@
             this.label2.Size = new System.Drawing.Size(276, 25);
             this.label2.TabIndex = 3;
             this.label2.Text = "Pacientes Categorizados: ";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
+     
             // 
             // label1
             // 
@@ -404,7 +446,7 @@
             this.label1.Size = new System.Drawing.Size(228, 25);
             this.label1.TabIndex = 2;
             this.label1.Text = "Pacientes en Espera: ";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+        
             // 
             // panel5
             // 
@@ -415,7 +457,7 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(1418, 37);
             this.panel5.TabIndex = 6;
-            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel5_Paint);
+         
             this.panel5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel5_MouseDown);
             // 
             // label4
@@ -429,55 +471,13 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "Tiempo Espera Atención Urgencia";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            
             // 
             // temporizador
             // 
             this.temporizador.Enabled = true;
             this.temporizador.Interval = 10000;
             this.temporizador.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // adultos
-            // 
-            this.adultos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.adultos.Location = new System.Drawing.Point(464, 497);
-            this.adultos.Name = "adultos";
-            this.adultos.Size = new System.Drawing.Size(93, 25);
-            this.adultos.TabIndex = 15;
-            this.adultos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label6.Location = new System.Drawing.Point(371, 497);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(100, 25);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Adultos: ";
-            // 
-            // pediatria
-            // 
-            this.pediatria.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.pediatria.Location = new System.Drawing.Point(726, 497);
-            this.pediatria.Name = "pediatria";
-            this.pediatria.Size = new System.Drawing.Size(93, 25);
-            this.pediatria.TabIndex = 17;
-            this.pediatria.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.Color.Transparent;
-            this.label7.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label7.Location = new System.Drawing.Point(620, 497);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(114, 25);
-            this.label7.TabIndex = 16;
-            this.label7.Text = "Pediatría: ";
             // 
             // Form1
             // 

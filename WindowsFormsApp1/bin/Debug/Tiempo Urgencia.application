@@ -7,14 +7,14 @@
     <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Tiempo Urgencia.exe.manifest" size="3598">
+    <dependentAssembly dependencyType="install" codebase="Tiempo Urgencia.exe.manifest" size="3636">
       <assemblyIdentity name="Tiempo Urgencia.exe" version="1.0.0.24" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>pPOCLCTG+uBbGuXJgh9MQqH0Z10=</dsig:DigestValue>
+        <dsig:DigestValue>KIKLS8gE7i7xfzG+LAAmLRr7SKY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

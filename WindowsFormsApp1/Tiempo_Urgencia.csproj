@@ -48,10 +48,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>21334F5A15032B2919C44D45998042AC34113760</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>FDD2143416553BD602B8074B956C555DA9CE177F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>WindowsFormsApp1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Tiempo_Urgencia_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -64,6 +64,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -109,6 +112,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Tiempo_Urgencia_TemporaryKey.pfx" />
     <None Include="WindowsFormsApp1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

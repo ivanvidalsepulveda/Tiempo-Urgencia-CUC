@@ -25,7 +25,7 @@ namespace WindowsFormsApp1
         
        
         
-        SqlConnection con = new SqlConnection(@"Data Source = 192.168.100.13; Initial Catalog = CLINIWIN; Persist Security Info=True;User ID = TURGENCIA; Password=184114518");
+        SqlConnection con = new SqlConnection(@"Data Source = 192.168.100.53; Initial Catalog = CLINIWIN; Persist Security Info=True;User ID = TURGENCIA; Password=184114518");
 
         
    
@@ -34,7 +34,19 @@ namespace WindowsFormsApp1
             con.Open();
 
             /// CANTIDAD ESPERA
-            SqlCommand es = new SqlCommand("SELECT COUNT(INGRESO.PAC_NUMFICHA) FROM INGRESO (nolock) LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT WHERE FICHA.PAC_TIPO = 'U' AND ING_CATEGORIZACION IS NULL AND INGRESO.SER_CODIGO = 'URG'AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND NOT  EXISTS ( SELECT * FROM CAMILLA_ASIGNADA  (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL )", con);
+            SqlCommand es = new SqlCommand(@"SELECT COUNT(INGRESO.PAC_NUMFICHA) AS ESPERA
+                                            FROM INGRESO (nolock) 
+                                            LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+
+                                            WHERE FICHA.PAC_TIPO = 'U' 
+                                            AND INGRESO.SER_CODIGO = 'URG'
+                                            AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                            AND INGRESO.ING_HORAALTA IS NULL 
+                                            AND INGRESO.ING_FECCIER IS NULL 
+                                            AND NOT  EXISTS ( SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA  (nolock) 
+				                                            WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL )
+                                            AND NOT EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                            ", con);
             
 
             es.ExecuteNonQuery();
@@ -44,7 +56,16 @@ namespace WindowsFormsApp1
 
             /// CANTIDAD EN BOX
          
-            SqlCommand bx = new SqlCommand("SELECT COUNT(INGRESO.PAC_NUMFICHA)  FROM INGRESO (nolock) LEFT JOIN ATENCION (NOLOCK) ON  ATENCION.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND ATENCION.ING_CORREL = INGRESO.ING_CORREL LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL LEFT JOIN USUARIO ON USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	WHERE FICHA.PAC_TIPO = 'U' AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND EXISTS (SELECT * FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) ", con);
+            SqlCommand bx = new SqlCommand(@"SELECT COUNT(INGRESO.PAC_NUMFICHA)  AS BOX
+                                            FROM INGRESO (nolock) 
+                                            LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                            WHERE FICHA.PAC_TIPO = 'U' 
+                                            AND INGRESO.SER_CODIGO = 'URG' 
+                                            AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                            AND INGRESO.ING_HORAALTA IS NULL 
+                                            AND INGRESO.ING_FECCIER IS NULL 
+                                            AND EXISTS (SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL)
+                                            ", con);
             
             bx.ExecuteNonQuery();
             int bxx = ((int)bx.ExecuteScalar());
@@ -52,7 +73,17 @@ namespace WindowsFormsApp1
 
 
             /// CANTIDAD CATEGORIZADOS
-            SqlCommand ct = new SqlCommand("SELECT count(INGRESO.PAC_NUMFICHA) as cantidad FROM INGRESO (nolock) LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA WHERE FICHA.PAC_TIPO = 'U'  AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND INGRESO.ING_CATEGORIZACION IS NOT NULL AND NOT  EXISTS ( SELECT * 	 FROM CAMILLA_ASIGNADA  (nolock) 	 WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL 	 AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL)  ", con);
+            SqlCommand ct = new SqlCommand(@"SELECT count(INGRESO.PAC_NUMFICHA) AS CATEGORIZADOS
+                                            FROM INGRESO (nolock) 
+                                            LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                            WHERE FICHA.PAC_TIPO = 'U'  
+                                            AND INGRESO.SER_CODIGO = 'URG' 
+                                            AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                            AND INGRESO.ING_HORAALTA IS NULL 
+                                            AND INGRESO.ING_FECCIER IS NULL 
+                                            AND NOT  EXISTS ( SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL 	 FROM CAMILLA_ASIGNADA  (nolock) 	 WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL 	 AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL) 
+                                            AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                            ", con);
            
 
             ct.ExecuteNonQuery();
@@ -60,7 +91,19 @@ namespace WindowsFormsApp1
             categoria.Text = ctt.ToString();
 
             ///CANTIDAD PEDIATRIA
-            SqlCommand bxn = new SqlCommand("SELECT COUNT(INGRESO.PAC_NUMFICHA)  FROM INGRESO(nolock) LEFT JOIN ATENCION(NOLOCK) ON ATENCION.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND ATENCION.ING_CORREL = INGRESO.ING_CORREL LEFT JOIN FICHA(nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE(nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR(nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT LEFT JOIN(SELECT* FROM REG_PROCED_ENFERMERIA where RPE_CORREL= 2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL = INGRESO.ING_CORREL LEFT JOIN USUARIO ON USUARIO.USU_LOGIN = HORA_ENFERMERA.USU_LOGIN LEFT JOIN(SELECT CMA_CORREL, PAC_NUMFICHA, ING_CORREL, CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = (SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA = CA.PAC_NUMFICHA AND CAM.ING_CORREL = CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL = INGRESO.ING_CORREL    LEFT JOIN(SELECT CMA_CORREL, PAC_NUMFICHA, ING_CORREL, CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = (SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA = CA.PAC_NUMFICHA AND CAM.ING_CORREL = CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA    ON PRIMERAHORA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL = INGRESO.ING_CORREL  WHERE FICHA.PAC_TIPO = 'U' and datediff(MONTH, PAC_FECNAC, GETDATE()) < 179 AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND EXISTS(SELECT * FROM CAMILLA_ASIGNADA(nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) ", con);
+            SqlCommand bxn = new SqlCommand(@"SELECT COUNT(INGRESO.PAC_NUMFICHA)  AS PEDIATRIA
+                                                FROM INGRESO(nolock) 
+                                                LEFT JOIN FICHA(nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                LEFT JOIN PACIENTE(nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
+                                                WHERE FICHA.PAC_TIPO = 'U' 
+                                                and datediff(MONTH, PAC_FECNAC, GETDATE()) < 179 
+                                                AND INGRESO.SER_CODIGO = 'URG' 
+                                                AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                                AND INGRESO.ING_HORAALTA IS NULL 
+                                                AND INGRESO.ING_FECCIER IS NULL 
+                                                AND EXISTS(SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL  FROM CAMILLA_ASIGNADA(nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL)          
+                                                AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                                ", con);
             
 
             bxn.ExecuteNonQuery();
@@ -68,7 +111,20 @@ namespace WindowsFormsApp1
             pediatria.Text = bxnn.ToString();
 
             /// CANTIDAD ADULTOS 
-            SqlCommand bxa = new SqlCommand("SELECT COUNT(INGRESO.PAC_NUMFICHA)  FROM INGRESO (nolock) LEFT JOIN ATENCION (NOLOCK) ON  ATENCION.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND ATENCION.ING_CORREL = INGRESO.ING_CORREL LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL LEFT JOIN USUARIO ON USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	WHERE FICHA.PAC_TIPO = 'U' and datediff(MONTH,PAC_FECNAC,GETDATE()) >= 179 AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND EXISTS (SELECT * FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL)", con);
+            SqlCommand bxa = new SqlCommand(@"SELECT COUNT(INGRESO.PAC_NUMFICHA)  AS ADULTOS
+                                                FROM INGRESO (nolock) 
+                                                LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
+                                                WHERE FICHA.PAC_TIPO = 'U' 
+                                                and datediff(MONTH,PAC_FECNAC,GETDATE()) >= 179 
+                                                AND INGRESO.SER_CODIGO = 'URG' 
+                                                AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                                AND INGRESO.ING_HORAALTA IS NULL 
+                                                AND INGRESO.ING_FECCIER IS NULL 
+                                                AND EXISTS (SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL  FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL)
+                                                AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+
+                                                ", con);
             
 
             bxa.ExecuteNonQuery();
@@ -88,7 +144,21 @@ namespace WindowsFormsApp1
         {
             try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter("SELECT CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108) TIEMPO, PACIENTE.PAC_NOMBRES +' '+ PACIENTE.PAC_PATERNO +', '+  CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT as PACIENTE, INGRESO.ING_DIAGING as DIAGNÓSTICO FROM INGRESO (nolock) LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT WHERE FICHA.PAC_TIPO = 'U' AND ING_CATEGORIZACION IS NULL AND INGRESO.SER_CODIGO = 'URG'AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND NOT  EXISTS ( SELECT * FROM CAMILLA_ASIGNADA  (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL )ORDER BY TIEMPO DESC", con);
+                SqlDataAdapter adapter = new SqlDataAdapter(@"SELECT CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108) TIEMPO,
+                                                                PACIENTE.PAC_NOMBRES +' '+ PACIENTE.PAC_PATERNO +', '+  CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT as PACIENTE,
+                                                                INGRESO.ING_DIAGING as DIAGNÓSTICO 
+                                                                FROM INGRESO (nolock) 
+                                                                LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                                LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL
+                                                                LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
+                                                                WHERE FICHA.PAC_TIPO = 'U' 
+                                                                AND INGRESO.SER_CODIGO = 'URG'
+                                                                AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                                                AND INGRESO.ING_HORAALTA IS NULL 
+                                                                AND INGRESO.ING_FECCIER IS NULL 
+                                                                AND NOT  EXISTS ( SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA  (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL )
+                                                                AND NOT EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                                                ORDER BY TIEMPO DESC", con);
                 DataTable table = new DataTable();
                 adapter.Fill(table);
                 
@@ -121,7 +191,24 @@ namespace WindowsFormsApp1
         {
             try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter("SELECT  'En Espera: '+ CONVERT(varchar(10),getdate()-INGRESO.ING_HORA_CATEG ,108)+', '+ 'Tiempo Total: ' + CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108)+', '+ING_CATEGORIZACION as TIEMPO, PACIENTE.PAC_NOMBRES +' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT   as PACIENTE, INGRESO.ING_DIAGING  as DIAGNOSTICO, PRESTADOR.PTD_NOMBRE AS MÉDICO FROM INGRESO (nolock) LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT WHERE FICHA.PAC_TIPO = 'U'	AND ING_CATEGORIZACION IS NOT NULL AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())    AND INGRESO.ING_HORAALTA IS NULL  AND INGRESO.ING_FECCIER IS NULL AND NOT  EXISTS ( SELECT *  FROM CAMILLA_ASIGNADA  (nolock)  WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL ) ORDER BY INGRESO.ING_CATEGORIZACION ASC,INGRESO.ING_horaING ASC", con);
+                SqlDataAdapter adapter = new SqlDataAdapter(@"SELECT  
+                                                                'En Espera: '+ CONVERT(varchar(10),getdate()-HCU_ESI.HE_FEC ,108)+', '+ 'Tiempo Total: ' + CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108)+', '+  HCU_ESI.HE_ESI as TIEMPO,
+                                                                PACIENTE.PAC_NOMBRES +' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT   as PACIENTE,
+                                                                INGRESO.ING_DIAGING  as DIAGNOSTICO,
+                                                                PRESTADOR.PTD_NOMBRE AS MÉDICO 
+                                                                FROM INGRESO (nolock) 
+                                                                LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                                LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
+                                                                LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
+                                                                LEFT JOIN HCU_ESI (nolock) ON INGRESO.PAC_NUMFICHA=HCU_ESI.PAC_NUMFICHA AND INGRESO.ING_CORREL=HCU_ESI.ING_CORREL
+                                                                WHERE FICHA.PAC_TIPO = 'U'	
+                                                                AND INGRESO.SER_CODIGO = 'URG' 
+                                                                AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())    
+                                                                AND INGRESO.ING_HORAALTA IS NULL  
+                                                                AND INGRESO.ING_FECCIER IS NULL 
+                                                                AND NOT  EXISTS ( SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL  FROM CAMILLA_ASIGNADA  (nolock)  WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA  AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL  AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL ) 
+                                                                AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                                                ORDER BY INGRESO.ING_CATEGORIZACION ASC,INGRESO.ING_horaING ASC", con);
                 DataTable table = new DataTable();
                 adapter.Fill(table);
                 dataCateg.DataSource = table;
@@ -133,7 +220,7 @@ namespace WindowsFormsApp1
                 foreach (DataGridViewRow row in dataCateg.Rows)
                 {
 
-                    if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains ("C4"))
+                    if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains ("ESI4"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.Green;
@@ -147,7 +234,7 @@ namespace WindowsFormsApp1
 
                         
 
-                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("C3"))
+                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("ESI3"))
                     {
                             row.DefaultCellStyle.BackColor = Color.Yellow;
                              row.DefaultCellStyle.ForeColor = Color.Black;
@@ -155,7 +242,7 @@ namespace WindowsFormsApp1
 
                     }
 
-                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("C5"))
+                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("ESI5"))
                     {
 
                             row.DefaultCellStyle.BackColor = Color.Blue;
@@ -165,7 +252,7 @@ namespace WindowsFormsApp1
 
                         }
 
-                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("C2"))
+                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("ESI2"))
                     {
 
                             row.DefaultCellStyle.BackColor = Color.DarkGoldenrod;
@@ -175,7 +262,7 @@ namespace WindowsFormsApp1
 
                         }
 
-                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("C1"))
+                        if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("ESI1"))
                     {
 
                             row.DefaultCellStyle.BackColor = Color.Red;
@@ -214,7 +301,37 @@ namespace WindowsFormsApp1
         {
             try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter("SELECT 'En Box: ' + CONVERT(varchar(10),getdate()-PRIMERAHORA.CMA_HORADESDE ,108) as TIEMPO , PACIENTE.PAC_NOMBRES+' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT  as PACIENTE, INGRESO.ING_DIAGING AS DIAGNOSTICO,ULTIMOBOX.CML_CODIGO + ', ' + INGRESO.ING_CATEGORIZACION AS BOX,case when PRIMERAHORA.CMA_HORADESDE > ATENCION.ATE_horaexamen THEN  'Atendido, Box Cargado Tarde' else (case when ATENCION.ATE_horaexamen is NOT NULL then 'Atendido en ' +  CONVERT(varchar(10),ATENCION.ATE_horaexamen - PRIMERAHORA.CMA_HORADESDE,108)else CONVERT(varchar(10),getdate() - PRIMERAHORA.CMA_HORADESDE,108) + ' Sin Atencion' END)end as ANAMNESIS,PRESTADOR.PTD_NOMBRE AS MÉDICO,Case when HORA_ENFERMERA.RPE_HORA  < PRIMERAHORA.CMA_HORADESDE THEN 'Atendido, Box Cargado Tarde' else (case when HORA_ENFERMERA.RPE_HORA IS NULL THEN  CONVERT(varchar(10),GETDATE()-PRIMERAHORA.CMA_HORADESDE ,108) + ' Sin Atencion' else 'Atendido en ' + CONVERT(varchar(10),HORA_ENFERMERA.RPE_HORA-PRIMERAHORA.CMA_HORADESDE ,108)end) END as PROCEDIMIENTOS,USUARIO.USU_NOMBRES+' '+ USUARIO.USU_PATERNO AS ENFERMERA  FROM INGRESO (nolock) LEFT JOIN ATENCION (NOLOCK) ON  ATENCION.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND ATENCION.ING_CORREL = INGRESO.ING_CORREL LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL LEFT JOIN USUARIO ON USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	WHERE FICHA.PAC_TIPO = 'U' AND INGRESO.SER_CODIGO = 'URG' AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())AND INGRESO.ING_HORAALTA IS NULL AND INGRESO.ING_FECCIER IS NULL AND EXISTS (SELECT * FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) ORDER BY INGRESO.ING_CATEGORIZACION ASC,PRIMERAHORA.CMA_HORADESDE ASC", con);
+                SqlDataAdapter adapter = new SqlDataAdapter(@"SELECT 'En Box: ' + CONVERT(varchar(10),getdate()-PRIMERAHORA.CMA_HORADESDE ,108) as TIEMPO ,
+                                                            PACIENTE.PAC_NOMBRES+' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT  as PACIENTE,
+                                                            INGRESO.ING_DIAGING AS DIAGNOSTICO,
+                                                            ULTIMOBOX.CML_CODIGO + ', ' + HCU_ESI.HE_ESI AS BOX,
+
+                                                            case when PRIMERAHORA.CMA_HORADESDE > URGENCIA_ANAMNESIS.UAN_HORA THEN  'Atendido, Box Cargado Tarde' else (case when URGENCIA_ANAMNESIS.UAN_HORA is NOT NULL then 'Atendido en ' +  CONVERT(varchar(10),URGENCIA_ANAMNESIS.UAN_HORA - PRIMERAHORA.CMA_HORADESDE,108)else CONVERT(varchar(10),getdate() - PRIMERAHORA.CMA_HORADESDE,108) + ' Sin Atencion' END)end as ANAMNESIS,
+
+                                                            PRESTADOR.PTD_NOMBRE AS MÉDICO,
+
+                                                            Case when HORA_ENFERMERA.RPE_HORA  < PRIMERAHORA.CMA_HORADESDE THEN 'Atendido, Box Cargado Tarde' else (case when HORA_ENFERMERA.RPE_HORA IS NULL THEN  CONVERT(varchar(10),GETDATE()-PRIMERAHORA.CMA_HORADESDE ,108) + ' Sin Atencion' else 'Atendido en ' + CONVERT(varchar(10),HORA_ENFERMERA.RPE_HORA-PRIMERAHORA.CMA_HORADESDE ,108)end) END as PROCEDIMIENTOS,
+                                                            AM_USUARIO.USU_NOMBRES+' '+ AM_USUARIO.USU_PATERNO AS ENFERMERA
+
+                                                            FROM INGRESO (nolock) 
+                                                            LEFT JOIN URGENCIA_ANAMNESIS (NOLOCK) ON  URGENCIA_ANAMNESIS.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND URGENCIA_ANAMNESIS.ING_CORREL = INGRESO.ING_CORREL 
+                                                            LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                            LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
+                                                            LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
+                                                            LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL 
+                                                            LEFT JOIN AM_USUARIO ON AM_USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN 
+                                                            LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	
+                                                            LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	
+                                                            LEFT JOIN HCU_ESI (nolock) ON INGRESO.PAC_NUMFICHA=HCU_ESI.PAC_NUMFICHA AND INGRESO.ING_CORREL=HCU_ESI.ING_CORREL
+
+                                                            WHERE FICHA.PAC_TIPO = 'U' 
+                                                            AND INGRESO.SER_CODIGO = 'URG' 
+                                                            AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                                            AND INGRESO.ING_HORAALTA IS NULL 
+                                                            AND INGRESO.ING_FECCIER IS NULL 
+                                                            AND EXISTS (SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) 
+                                                            AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+                                                            ORDER BY INGRESO.ING_CATEGORIZACION ASC,PRIMERAHORA.CMA_HORADESDE ASC", con);
                 //INGRESO.ING_CATEGORIZACION + ', ' + ULTIMOBOX.CML_CODIGO AS BOX
                 DataTable table = new DataTable();
                 adapter.Fill(table);
@@ -228,7 +345,7 @@ namespace WindowsFormsApp1
                 foreach (DataGridViewRow row in dataBox.Rows)
                 {
 
-                    if ((Convert.ToString(row.Cells["box"].Value)).Contains( "C4"))
+                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("ESI4"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.Green;
@@ -238,7 +355,7 @@ namespace WindowsFormsApp1
 
                     }
 
-                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("C3"))
+                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("ESI3"))
                     {
                         row.DefaultCellStyle.BackColor = Color.Yellow;
                         row.DefaultCellStyle.ForeColor = Color.Black;
@@ -246,7 +363,7 @@ namespace WindowsFormsApp1
 
                     }
 
-                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("C5"))
+                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("ESI5"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.Blue;
@@ -256,7 +373,7 @@ namespace WindowsFormsApp1
 
                     }
 
-                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("C2"))
+                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("ESI2"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.DarkGoldenrod;
@@ -266,7 +383,7 @@ namespace WindowsFormsApp1
 
                     }
 
-                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("C1"))
+                    if ((Convert.ToString(row.Cells["box"].Value)).Contains("ESI1"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.Red;

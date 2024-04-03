@@ -103,7 +103,7 @@
             // pediatria
             // 
             this.pediatria.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.pediatria.Location = new System.Drawing.Point(726, 497);
+            this.pediatria.Location = new System.Drawing.Point(718, 446);
             this.pediatria.Name = "pediatria";
             this.pediatria.Size = new System.Drawing.Size(93, 25);
             this.pediatria.TabIndex = 17;
@@ -115,7 +115,7 @@
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label7.Location = new System.Drawing.Point(620, 497);
+            this.label7.Location = new System.Drawing.Point(612, 446);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(114, 25);
             this.label7.TabIndex = 16;
@@ -124,7 +124,7 @@
             // adultos
             // 
             this.adultos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.adultos.Location = new System.Drawing.Point(464, 497);
+            this.adultos.Location = new System.Drawing.Point(456, 446);
             this.adultos.Name = "adultos";
             this.adultos.Size = new System.Drawing.Size(93, 25);
             this.adultos.TabIndex = 15;
@@ -136,7 +136,7 @@
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label6.Location = new System.Drawing.Point(371, 497);
+            this.label6.Location = new System.Drawing.Point(363, 446);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(100, 25);
             this.label6.TabIndex = 14;
@@ -154,7 +154,7 @@
             // categoria
             // 
             this.categoria.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.categoria.Location = new System.Drawing.Point(286, 194);
+            this.categoria.Location = new System.Drawing.Point(277, 162);
             this.categoria.Name = "categoria";
             this.categoria.Size = new System.Drawing.Size(93, 25);
             this.categoria.TabIndex = 12;
@@ -163,7 +163,7 @@
             // box
             // 
             this.box.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(155)))), ((int)(((byte)(219)))));
-            this.box.Location = new System.Drawing.Point(211, 497);
+            this.box.Location = new System.Drawing.Point(203, 446);
             this.box.Name = "box";
             this.box.Size = new System.Drawing.Size(93, 25);
             this.box.TabIndex = 11;
@@ -172,9 +172,9 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(505, 129);
+            this.pictureBox3.Location = new System.Drawing.Point(535, 87);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(89, 42);
+            this.pictureBox3.Size = new System.Drawing.Size(94, 44);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 10;
             this.pictureBox3.TabStop = false;
@@ -184,9 +184,9 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(11, 10);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 10);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(488, 161);
+            this.pictureBox1.Size = new System.Drawing.Size(418, 134);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
@@ -194,9 +194,9 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(505, 10);
+            this.pictureBox2.Location = new System.Drawing.Point(436, 10);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(261, 83);
+            this.pictureBox2.Size = new System.Drawing.Size(275, 71);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 9;
             this.pictureBox2.TabStop = false;
@@ -242,7 +242,7 @@
             this.dataCateg.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataCateg.EnableHeadersVisualStyles = false;
             this.dataCateg.GridColor = System.Drawing.Color.DarkCyan;
-            this.dataCateg.Location = new System.Drawing.Point(20, 222);
+            this.dataCateg.Location = new System.Drawing.Point(11, 190);
             this.dataCateg.Name = "dataCateg";
             this.dataCateg.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -265,7 +265,7 @@
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataCateg.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataCateg.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataCateg.Size = new System.Drawing.Size(1243, 251);
+            this.dataCateg.Size = new System.Drawing.Size(1243, 239);
             this.dataCateg.TabIndex = 7;
             this.dataCateg.ColumnSortModeChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataCateg_ColumnSortModeChanged);
             this.dataCateg.SelectionChanged += new System.EventHandler(this.dataCateg_SelectionChanged);
@@ -311,7 +311,7 @@
             this.dataBox.DefaultCellStyle = dataGridViewCellStyle8;
             this.dataBox.EnableHeadersVisualStyles = false;
             this.dataBox.GridColor = System.Drawing.Color.DarkCyan;
-            this.dataBox.Location = new System.Drawing.Point(20, 525);
+            this.dataBox.Location = new System.Drawing.Point(12, 474);
             this.dataBox.Name = "dataBox";
             this.dataBox.ReadOnly = true;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -334,7 +334,7 @@
             dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataBox.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dataBox.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataBox.Size = new System.Drawing.Size(1243, 251);
+            this.dataBox.Size = new System.Drawing.Size(1243, 321);
             this.dataBox.TabIndex = 1;
             this.dataBox.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataBox_CellContentClick);
             this.dataBox.ColumnSortModeChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataBox_ColumnSortModeChanged);
@@ -378,7 +378,7 @@
             this.dataEspera.DefaultCellStyle = dataGridViewCellStyle13;
             this.dataEspera.EnableHeadersVisualStyles = false;
             this.dataEspera.GridColor = System.Drawing.Color.DarkCyan;
-            this.dataEspera.Location = new System.Drawing.Point(853, 38);
+            this.dataEspera.Location = new System.Drawing.Point(772, 38);
             this.dataEspera.Name = "dataEspera";
             this.dataEspera.ReadOnly = true;
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -398,7 +398,7 @@
             dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.White;
             this.dataEspera.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.dataEspera.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataEspera.Size = new System.Drawing.Size(419, 133);
+            this.dataEspera.Size = new System.Drawing.Size(491, 133);
             this.dataEspera.TabIndex = 6;
             this.dataEspera.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataEspea_CellContentClick);
             this.dataEspera.ColumnSortModeChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataEspera_ColumnSortModeChanged);
@@ -410,7 +410,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label3.Location = new System.Drawing.Point(15, 497);
+            this.label3.Location = new System.Drawing.Point(7, 446);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(197, 25);
             this.label3.TabIndex = 4;
@@ -422,7 +422,7 @@
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(8)))), ((int)(((byte)(17)))));
-            this.label2.Location = new System.Drawing.Point(16, 194);
+            this.label2.Location = new System.Drawing.Point(7, 162);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(276, 25);
             this.label2.TabIndex = 3;

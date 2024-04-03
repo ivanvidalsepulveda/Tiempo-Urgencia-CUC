@@ -25,7 +25,7 @@ namespace WindowsFormsApp1
         
        
         
-        SqlConnection con = new SqlConnection(@"Data Source = 192.168.100.53; Initial Catalog = CLINIWIN; Persist Security Info=True;User ID = TURGENCIA; Password=184114518");
+        SqlConnection con = new SqlConnection(@"Data Source = 192.168.100.13; Initial Catalog = CLINIWIN; Persist Security Info=True;User ID = TURGENCIA; Password=184114518");
 
         
    
@@ -191,8 +191,9 @@ namespace WindowsFormsApp1
         {
             try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter(@"SELECT  
-                                                                'En Espera: '+ CONVERT(varchar(10),getdate()-HCU_ESI.HE_FEC ,108)+', '+ 'Tiempo Total: ' + CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108)+', '+  HCU_ESI.HE_ESI as TIEMPO,
+                SqlDataAdapter adapter = new SqlDataAdapter(@"
+                                                                SELECT  
+                                                                'En Espera: '+ CONVERT(varchar(10),getdate()-HCU_ESI.HE_FEC ,108)+', '+ 'Tiempo Total: ' + CONVERT(varchar(10),getdate()-INGRESO.ING_horaING ,108)+', '+  case when HCU_ESI.HE_ESI='ESI' THEN 'S/C' ELSE HCU_ESI.HE_ESI END as TIEMPO,
                                                                 PACIENTE.PAC_NOMBRES +' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT   as PACIENTE,
                                                                 INGRESO.ING_DIAGING  as DIAGNOSTICO,
                                                                 PRESTADOR.PTD_NOMBRE AS MÉDICO 
@@ -200,7 +201,8 @@ namespace WindowsFormsApp1
                                                                 LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
                                                                 LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
                                                                 LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
-                                                                LEFT JOIN HCU_ESI (nolock) ON INGRESO.PAC_NUMFICHA=HCU_ESI.PAC_NUMFICHA AND INGRESO.ING_CORREL=HCU_ESI.ING_CORREL
+                                                                LEFT JOIN ( SELECT HE_CORREL,PAC_NUMFICHA,ING_CORREL,HE_ESI,HE_FEC FROM HCU_ESI HE WHERE HE_CORREL = ( SELECT TOP 1 HE_CORREL FROM HCU_ESI HES WHERE HES.PAC_NUMFICHA=HE.PAC_NUMFICHA AND HES.ING_CORREL=HE.ING_CORREL  ORDER BY HES.HE_CORREL DESC))AS HCU_ESI 	ON HCU_ESI.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HCU_ESI.ING_CORREL=INGRESO.ING_CORREL 	
+
                                                                 WHERE FICHA.PAC_TIPO = 'U'	
                                                                 AND INGRESO.SER_CODIGO = 'URG' 
                                                                 AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())    
@@ -272,7 +274,7 @@ namespace WindowsFormsApp1
 
                         }
 
-                    if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("NP"))
+                    if ((Convert.ToString(row.Cells["tiempo"].Value)).Contains("S/C"))
                     {
 
                         row.DefaultCellStyle.BackColor = Color.White;
@@ -281,8 +283,7 @@ namespace WindowsFormsApp1
 
 
                     }
-
-
+                                     
 
 
                 } 
@@ -302,36 +303,38 @@ namespace WindowsFormsApp1
             try
             {
                 SqlDataAdapter adapter = new SqlDataAdapter(@"SELECT 'En Box: ' + CONVERT(varchar(10),getdate()-PRIMERAHORA.CMA_HORADESDE ,108) as TIEMPO ,
-                                                            PACIENTE.PAC_NOMBRES+' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT  as PACIENTE,
-                                                            INGRESO.ING_DIAGING AS DIAGNOSTICO,
-                                                            ULTIMOBOX.CML_CODIGO + ', ' + HCU_ESI.HE_ESI AS BOX,
+                                                                PACIENTE.PAC_NOMBRES+' '+ PACIENTE.PAC_PATERNO +', '+ CONVERT(varchar(100), (DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE()))/12)+' Años '+ CONVERT(varchar(100),(DATEDIFF(MONTH,PACIENTE.PAC_FECNAC,GETDATE())%12)) +' Meses' +', '+  PACIENTE.PAC_RUT  as PACIENTE,
+                                                                INGRESO.ING_DIAGING AS DIAGNOSTICO,
+                                                                ULTIMOBOX.CML_CODIGO + ', ' + ESI.HE_ESI AS BOX,
 
-                                                            case when PRIMERAHORA.CMA_HORADESDE > URGENCIA_ANAMNESIS.UAN_HORA THEN  'Atendido, Box Cargado Tarde' else (case when URGENCIA_ANAMNESIS.UAN_HORA is NOT NULL then 'Atendido en ' +  CONVERT(varchar(10),URGENCIA_ANAMNESIS.UAN_HORA - PRIMERAHORA.CMA_HORADESDE,108)else CONVERT(varchar(10),getdate() - PRIMERAHORA.CMA_HORADESDE,108) + ' Sin Atencion' END)end as ANAMNESIS,
+                                                                case when PRIMERAHORA.CMA_HORADESDE > URGENCIA_ANAMNESIS.UAN_HORA THEN  'Atendido, Box Cargado Tarde' else (case when URGENCIA_ANAMNESIS.UAN_HORA is NOT NULL then 'Atendido en ' +  CONVERT(varchar(10),URGENCIA_ANAMNESIS.UAN_HORA - PRIMERAHORA.CMA_HORADESDE,108)else CONVERT(varchar(10),getdate() - PRIMERAHORA.CMA_HORADESDE,108) + ' Sin Atencion' END)end as ANAMNESIS,
 
-                                                            PRESTADOR.PTD_NOMBRE AS MÉDICO,
+                                                                PRESTADOR.PTD_NOMBRE AS MÉDICO,
 
-                                                            Case when HORA_ENFERMERA.RPE_HORA  < PRIMERAHORA.CMA_HORADESDE THEN 'Atendido, Box Cargado Tarde' else (case when HORA_ENFERMERA.RPE_HORA IS NULL THEN  CONVERT(varchar(10),GETDATE()-PRIMERAHORA.CMA_HORADESDE ,108) + ' Sin Atencion' else 'Atendido en ' + CONVERT(varchar(10),HORA_ENFERMERA.RPE_HORA-PRIMERAHORA.CMA_HORADESDE ,108)end) END as PROCEDIMIENTOS,
-                                                            AM_USUARIO.USU_NOMBRES+' '+ AM_USUARIO.USU_PATERNO AS ENFERMERA
+                                                                Case when HORA_ENFERMERA.RPE_HORA  < PRIMERAHORA.CMA_HORADESDE THEN 'Atendido, Box Cargado Tarde' else (case when HORA_ENFERMERA.RPE_HORA IS NULL THEN  CONVERT(varchar(10),GETDATE()-PRIMERAHORA.CMA_HORADESDE ,108) + ' Sin Atencion' else 'Atendido en ' + CONVERT(varchar(10),HORA_ENFERMERA.RPE_HORA-PRIMERAHORA.CMA_HORADESDE ,108)end) END as PROCEDIMIENTOS,
+                                                                AM_USUARIO.USU_NOMBRES+' '+ AM_USUARIO.USU_PATERNO AS ENFERMERA
 
-                                                            FROM INGRESO (nolock) 
-                                                            LEFT JOIN URGENCIA_ANAMNESIS (NOLOCK) ON  URGENCIA_ANAMNESIS.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA AND URGENCIA_ANAMNESIS.ING_CORREL = INGRESO.ING_CORREL 
-                                                            LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
-                                                            LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
-                                                            LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
-                                                            LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL 
-                                                            LEFT JOIN AM_USUARIO ON AM_USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN 
-                                                            LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	
-                                                            LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	
-                                                            LEFT JOIN HCU_ESI (nolock) ON INGRESO.PAC_NUMFICHA=HCU_ESI.PAC_NUMFICHA AND INGRESO.ING_CORREL=HCU_ESI.ING_CORREL
+                                                                FROM INGRESO (nolock) 
 
-                                                            WHERE FICHA.PAC_TIPO = 'U' 
-                                                            AND INGRESO.SER_CODIGO = 'URG' 
-                                                            AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
-                                                            AND INGRESO.ING_HORAALTA IS NULL 
-                                                            AND INGRESO.ING_FECCIER IS NULL 
-                                                            AND EXISTS (SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) 
-                                                            AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
-                                                            ORDER BY INGRESO.ING_CATEGORIZACION ASC,PRIMERAHORA.CMA_HORADESDE ASC", con);
+                                                                LEFT JOIN ( SELECT ANA.UAN_CORREL,PAC_NUMFICHA,ING_CORREL,UAN_HORA FROM URGENCIA_ANAMNESIS ANA WHERE UAN_CORREL = ( SELECT TOP 1 UAN_CORREL FROM URGENCIA_ANAMNESIS URG WHERE URG.PAC_NUMFICHA=ANA.PAC_NUMFICHA AND URG.ING_CORREL=ANA.ING_CORREL  ORDER BY URG.UAN_CORREL DESC))AS URGENCIA_ANAMNESIS 	ON URGENCIA_ANAMNESIS.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND URGENCIA_ANAMNESIS.ING_CORREL=INGRESO.ING_CORREL 	
+                                                                LEFT JOIN FICHA  (nolock) ON FICHA.PAC_NUMFICHA = INGRESO.PAC_NUMFICHA 
+                                                                LEFT JOIN PACIENTE  (nolock) ON FICHA.PAC_CORREL = PACIENTE.PAC_CORREL 
+                                                                LEFT JOIN PRESTADOR  (nolock) ON INGRESO.PTD_RUT_TRAT = PRESTADOR.PTD_RUT 
+                                                                LEFT JOIN (SELECT * FROM REG_PROCED_ENFERMERIA where RPE_CORREL=2) AS HORA_ENFERMERA ON HORA_ENFERMERA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND HORA_ENFERMERA.ING_CORREL=INGRESO.ING_CORREL 
+                                                                LEFT JOIN AM_USUARIO ON AM_USUARIO.USU_LOGIN=HORA_ENFERMERA.USU_LOGIN 
+                                                                LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CML_CODIGO FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL ORDER BY CAM.CMA_CORREL DESC))AS ULTIMOBOX ON ULTIMOBOX.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ULTIMOBOX.ING_CORREL=INGRESO.ING_CORREL 	
+                                                                LEFT JOIN ( SELECT CMA_CORREL,PAC_NUMFICHA,ING_CORREL,CMA_HORADESDE FROM CAMILLA_ASIGNADA CA WHERE CMA_CORREL = ( SELECT TOP 1 CMA_CORREL FROM CAMILLA_ASIGNADA CAM WHERE CAM.PAC_NUMFICHA=CA.PAC_NUMFICHA AND CAM.ING_CORREL=CA.ING_CORREL  ORDER BY CAM.CMA_CORREL ASC))AS PRIMERAHORA 	ON PRIMERAHORA.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND PRIMERAHORA.ING_CORREL=INGRESO.ING_CORREL 	
+                                                                LEFT JOIN ( SELECT HE_CORREL,PAC_NUMFICHA,ING_CORREL,HE_ESI,HE_FEC FROM HCU_ESI HE WHERE HE_CORREL = ( SELECT TOP 1 HE_CORREL FROM HCU_ESI HES WHERE HES.PAC_NUMFICHA=HE.PAC_NUMFICHA AND HES.ING_CORREL=HE.ING_CORREL  ORDER BY HES.HE_CORREL DESC))AS ESI 	ON ESI.PAC_NUMFICHA=INGRESO.PAC_NUMFICHA AND ESI.ING_CORREL=INGRESO.ING_CORREL 	
+
+                                                                WHERE FICHA.PAC_TIPO = 'U' 
+                                                                AND INGRESO.SER_CODIGO = 'URG' 
+                                                                AND INGRESO.ING_HORAING > DATEADD(D, -1, GETDATE())
+                                                                AND INGRESO.ING_HORAALTA IS NULL 
+                                                                AND INGRESO.ING_FECCIER IS NULL 
+                                                                AND EXISTS (SELECT TOP 1 CAMILLA_ASIGNADA.PAC_NUMFICHA,CAMILLA_ASIGNADA.ING_CORREL FROM CAMILLA_ASIGNADA (nolock) WHERE INGRESO.PAC_NUMFICHA = CAMILLA_ASIGNADA.PAC_NUMFICHA AND INGRESO.ING_CORREL = CAMILLA_ASIGNADA.ING_CORREL AND CAMILLA_ASIGNADA.CML_CODIGO IS NOT NULL AND CAMILLA_ASIGNADA.CMA_HORAHASTA IS NULL) 
+                                                                AND EXISTS ( SELECT TOP 1 HCU_ESI.PAC_NUMFICHA,HCU_ESI.ING_CORREL FROM HCU_ESI WHERE INGRESO.PAC_NUMFICHA = HCU_ESI.PAC_NUMFICHA  AND INGRESO.ING_CORREL = HCU_ESI.ING_CORREL  AND HCU_ESI.HE_ESI IS NOT NULL )
+
+                                                                ORDER BY PRIMERAHORA.CMA_HORADESDE ASC ", con);
                 //INGRESO.ING_CATEGORIZACION + ', ' + ULTIMOBOX.CML_CODIGO AS BOX
                 DataTable table = new DataTable();
                 adapter.Fill(table);
@@ -392,6 +395,8 @@ namespace WindowsFormsApp1
 
 
                     }
+
+              
                 }
             }
 

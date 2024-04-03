@@ -24,3 +24,16 @@ D:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.exe
 D:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.pdb
 D:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.exe.manifest
 D:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.application
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo_Urgencia.Properties.Resources.resources
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo_Urgencia.csproj.GenerateResource.cache
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.exe
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.pdb
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.exe.manifest
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.application
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.exe
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\bin\Debug\Tiempo Urgencia.pdb
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo_Urgencia.csproj.CoreCompileInputs.cache
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.exe.manifest
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo Urgencia.application
+C:\Proyecto\Tiempo-Urgencia-CUC\WindowsFormsApp1\obj\Debug\Tiempo_Urgencia.csproj.AssemblyReference.cache
